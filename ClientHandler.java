@@ -18,35 +18,42 @@ public class ClientHandler extends Thread{
             out = new PrintWriter(sock.getOutputStream());
             in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
             String msg = in.readLine();
-                String key = "12345";
-                if(!(msg.equals(key))){
+            String key = "12345";
+
+                if(!msg.equals(key)){
                     out.println("couldn't handshake");
-                    //System.out.println("DEBUG 1: is it here?");
-                    sock.close();  
-                }
-                else{
-                    out.println("12345");
                     out.flush();
+                    //System.out.println("DEBUG 1: is it here?");
+                    return;  
                 }
-            //read and echo back forever!
-            // why do i loop forever?
-            while(true){
-                if(msg == null){
-                    break;
-                }
+                out.println("12345");
+                out.flush();
+            
+            Thread.sleep(2000);
+
+            while((msg = in.readLine()) != null){
                 // will this properly find the int in the message?
                 try{
                 int intNumber = Integer.parseInt(msg);
+                if (intNumber > Integer.MAX_VALUE){
+                    out.println("There was an exception on the server");
+                    out.flush();
+                    break;
+                }
                 ArrayList <Integer> factors = new ArrayList<>();
+                
                 // factorization
                 for(int i=1; i<= intNumber; i++){
                     if (intNumber % i == 0){
                         factors.add(i);
+                        //System.out.println(i);
+                        
                     }
                 }
+                System.out.println(factors);
                 out.println("The number " + intNumber + " has " + factors.size() + " factors");
                 out.flush();
-                }
+               }
                 catch(Exception e){
                     System.err.println("Integer was not entered");
                 }
@@ -55,9 +62,16 @@ public class ClientHandler extends Thread{
             //close the connections
             // System.out.println("DEBUG: is it here?");
             try{
-                out.close();
-                in.close();
-                sock.close();
+                if(out != null){
+                    out.close();
+                }
+                if(in != null){
+                    in.close();
+                }
+                if (sock != null){
+                    sock.close();
+                }
+            
             }
             catch(Exception e) {
                 out.println("IO Exception");
@@ -68,6 +82,7 @@ public class ClientHandler extends Thread{
             out.println("There was an exception on the server");
             out.flush();
         }
+    
 
         //note the loss of the connection
         System.out.println("Connection lost: "+ sock.getRemoteSocketAddress());

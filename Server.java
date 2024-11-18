@@ -19,10 +19,11 @@ public class Server {
             System.exit(1);
             e.printStackTrace();
         }
+        this.connectedTimes = new ArrayList<>();
     }
 
     public void serve(int n){
-        for(int i=0; i<clients; i++){
+        for(int i=0; i<n; i++){
             try{
                 //accept incoming connection
                 Socket clientSock = serverSock.accept();
@@ -34,17 +35,12 @@ public class Server {
                 
                 //continue looping
             }catch(Exception e){
-                System.err.print("couldn't handshake");
+                System.err.print("Couldn't handle client connection");
+                e.printStackTrace();
             } //exit serve if exception
         }
-        try {
-            serverSock.close();
-        }
-        catch(Exception e){
-            System.err.print("can't close server socket");
-
-        }
-        return;
+     
+    
     }
     
 

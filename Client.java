@@ -8,6 +8,7 @@ public class Client {
     private int port;
     private Socket socket = null;
     private String IP;
+   
 
     public Client(String host, int port){
         this.host = host;
@@ -15,6 +16,7 @@ public class Client {
 
         try{
             socket = new Socket(host, port);
+        
         }
         catch(Exception e){
             System.err.print("issue with the constructor of client");
@@ -42,16 +44,18 @@ public class Client {
             BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             writer.println(key);
             writer.flush();
+            socket.setSoTimeout(5000);
             // possible bug here
+            
             String response = reader.readLine();
-            if(key.equals(response)){
-                System.out.println("handshake succesful");
+            if (response.equals(key)){
+                System.out.println("successful handshake");
             }
+            
 
         }
         catch(Exception e){
             System.err.print("There was an exception on the server");
-    
 
         }
         
@@ -69,9 +73,10 @@ public class Client {
             writer.println(number);
             writer.flush();
             //fetching response
-
+            socket.setSoTimeout(5000);
             // will this return null? wondering how fast the socket receives the output from the server
             response = reader.readLine();
+            //System.out.println(response);
             // disconnect();
         }
         catch(Exception e){
@@ -84,9 +89,14 @@ public class Client {
         return response;
     }
     // should just close the socket, that should be fine
+
     public void disconnect(){
         try{
-            socket.close();
+
+            if (socket != null && !socket.isClosed()) {
+                socket.close();
+            }
+               
         }
         catch(Exception e){
             System.err.print("disconnect method issue for client");
