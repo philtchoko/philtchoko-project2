@@ -26,6 +26,7 @@ public class Server {
             try{
                 //accept incoming connection
                 Socket clientSock = serverSock.accept();
+                addTime();
                 //System.out.println("New connection: "+ clientSock.getRemoteSocketAddress());
                 
                 //start the thread
@@ -44,6 +45,10 @@ public class Server {
         return connectedTimes;
     }
 
+    public void addTime(){
+        LocalDateTime now = LocalDateTime.now();
+        connectedTimes.add(now);
+    }
 
     public void disconnect(){
         try{

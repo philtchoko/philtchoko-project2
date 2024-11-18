@@ -57,15 +57,21 @@ public class Client {
 
 
     public String request(String number){
-        int intNumber = Integer.parseInt(number);
-        ArrayList <Integer> factors = new ArrayList<>();
-        for(int i=0; i<= intNumber; i++){
-            if (intNumber % i == 0){
-                factors.add(i);
-            }
+        String response = null;
+        try {
+            PrintWriter writer = new PrintWriter(socket.getOutputStream());
+            BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            writer.println("Sending request: Factorize " + number);
+            //fetching response
+            response = reader.readLine();
+
+        }
+        catch(Exception e){
+            System.err.print("There was an exception on the server");
+            System.exit(1);
         }
 
-        return "The number " + number + " has " + factors.size() + " factors";
+        return response;
     }
 
     public void disconnect(){
@@ -81,6 +87,15 @@ public class Client {
 
 
 
+    /* 
+    int intNumber = Integer.parseInt(number);
+    ArrayList <Integer> factors = new ArrayList<>();
+    for(int i=0; i<= intNumber; i++){
+        if (intNumber % i == 0){
+            factors.add(i);
+        }
+    }
+    */
 
     /* 
     public static void main(String args[]){
