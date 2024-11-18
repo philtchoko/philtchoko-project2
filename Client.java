@@ -17,7 +17,7 @@ public class Client {
             socket = new Socket(host, port);
         }
         catch(Exception e){
-            System.err.print("IO Exception");
+            System.err.print("issue with the constructor of client");
             e.printStackTrace();
         }
     }
@@ -35,21 +35,26 @@ public class Client {
     }
 
     public void handshake(){
-        String passcode = "12345";
+        String key = "12345";
+        
         try{
-            Scanner scanner = new Scanner(System.in);
-            System.out.println("Enter the pin: ");
-            String pin = scanner.nextLine();
-            if (!(pin.equals(passcode))){
-                disconnect();
+            PrintWriter writer = new PrintWriter(socket.getOutputStream());
+            BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            writer.println(key);
+            writer.flush();
+            // possible bug here
+            String response = reader.readLine();
+            if(key.equals(response)){
+                System.out.println("handshake succesful");
             }
-            scanner.close();
+
         }
         catch(Exception e){
             System.err.print("There was an exception on the server");
-            System.exit(1);
+    
 
         }
+        
 
 
         return;
@@ -57,29 +62,35 @@ public class Client {
 
 
     public String request(String number){
-        String response = null;
+        String response = ""; 
         try {
             PrintWriter writer = new PrintWriter(socket.getOutputStream());
             BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            writer.println("Sending request: Factorize " + number);
+            writer.println(number);
+            writer.flush();
             //fetching response
-            response = reader.readLine();
 
+            // will this return null? wondering how fast the socket receives the output from the server
+            response = reader.readLine();
+            // disconnect();
         }
         catch(Exception e){
-            System.err.print("There was an exception on the server");
+            System.err.print("request method issue");
+            e.printStackTrace();
             System.exit(1);
         }
+        
 
         return response;
     }
-
+    // should just close the socket, that should be fine
     public void disconnect(){
         try{
             socket.close();
         }
         catch(Exception e){
-            System.err.print("IO Exception");
+            System.err.print("disconnect method issue for client");
+            e.printStackTrace();
             System.exit(1);
         }
     }

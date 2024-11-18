@@ -12,12 +12,12 @@ public class Server {
 
     public Server(int port){
         this.port = port;
-
         try{
             serverSock = new ServerSocket(port);
         }catch(Exception e){
             System.err.println("Cannot establish server socket");
             System.exit(1);
+            e.printStackTrace();
         }
     }
 
@@ -34,8 +34,15 @@ public class Server {
                 
                 //continue looping
             }catch(Exception e){
-                System.err.print("IO Exception");
+                System.err.print("couldn't handshake");
             } //exit serve if exception
+        }
+        try {
+            serverSock.close();
+        }
+        catch(Exception e){
+            System.err.print("can't close server socket");
+
         }
         return;
     }
@@ -55,7 +62,7 @@ public class Server {
             serverSock.close();
         }
         catch(Exception e){
-            System.err.print("IO Exception");
+            System.err.print("disconnect method issue");
             System.exit(1);
         }
     }

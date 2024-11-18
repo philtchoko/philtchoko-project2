@@ -25,9 +25,12 @@ public class Project2_Tester {
         Client client = new Client("localhost", 2021);
         assertEquals("/127.0.0.1", client.getSocket().getLocalAddress().toString());
         assertEquals(2021, client.getSocket().getPort());
-
+        System.out.println(client.getSocket().isClosed());
         Socket remote = serverSocket.accept();
         client.handshake();
+        System.out.println(client.getSocket().isClosed());
+    
+
         Thread.sleep(1000); // give it a second to actually flush
         BufferedReader incoming = new BufferedReader(new InputStreamReader(remote.getInputStream()));
         line = incoming.readLine();
@@ -65,10 +68,13 @@ public class Project2_Tester {
     try {
         Client client = new Client("localhost", 2021);
 
+        System.out.println(client.getSocket().isClosed());
         client.handshake();
+        System.out.println(client.getSocket().isClosed());
         Thread.sleep(1000); // give it a second to actually flush
 
         server.serve(1);
+        System.out.println(client.getSocket().isClosed());
         Thread.sleep(1000); // give it a second to actually flush
 
         line = client.request("17");
